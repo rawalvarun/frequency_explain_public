@@ -230,6 +230,7 @@ def train(epoch):
 
 # testing
 def test(epoch):
+    print("test epoch : ", epoch)
     global best_acc, net
     net = net.eval()
     test_loss = 0
@@ -264,6 +265,7 @@ def test(epoch):
 
 if __name__ == '__main__':
     for epoch in range(start_epoch, start_epoch+args.epoch):
+        print("training epoch :", epoch)
         train(epoch)
         test(epoch)
         torch.cuda.empty_cache()

@@ -149,46 +149,55 @@ else:
 '''
 
 
-from CPU_utils import make_and_restore_model_CPU_only
+# from CPU_utils import make_and_restore_model_CPU_only
 
-MODEL = "cifar_nat.pt"
+# MODEL = "cifar_nat.pt"
 
-ds = CIFAR('data/cifar-10-batches-py')
+# ds = CIFAR('data/cifar-10-batches-py')
 
-if use_cuda:
-	model, _ = make_and_restore_model(arch='resnet50', dataset=ds,
-			resume_path=MODEL, parallel=False)
-else:
-	model, _ = make_and_restore_model_CPU_only(arch='resnet50', dataset=ds,
-				resume_path=MODEL, parallel=False)
+# if use_cuda:
+# 	model, _ = make_and_restore_model(arch='resnet50', dataset=ds,
+# 			resume_path=MODEL, parallel=False)
+# else:
+# 	model, _ = make_and_restore_model_CPU_only(arch='resnet50', dataset=ds,
+# 				resume_path=MODEL, parallel=False)
 
-model = model.model
+# model = model.model
+
+
+# important before starting inferencing
+#model.eval()
+
+
+
+# resnet18 = models.resnet18(pretrained=True)
+# vgg16 = models.vgg16(pretrained=True)
+
+
+# pick from transfer_learnt model
+model = torch.load("saved_alexnet_transfer_learnt_10classes.pth")
+# important before starting inferencing
 model.eval()
-
-
 
 ####################################
 # load data
 ####################################
 batch_size = 200
+num_folds = 0
 
-transform = transforms.Compose([
-	transforms.ToTensor(),
-	transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-])
 
-trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
-										download=True, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
-										  shuffle=True, num_workers=0)
+transform=transforms.Compose([
+                    transforms.Pad(4),
+                    transforms.RandomCrop(96),
+                    transforms.RandomHorizontalFlip(),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+                ])
 
-testset = torchvision.datasets.CIFAR10(root='./data', train=False,
-									   download=True, transform=transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
-										 shuffle=False, num_workers=0)
+testset = torchvision.datasets.STL10(root='../data',download=True, transform=transform)
+testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,shuffle=False, num_workers=0)
 
-classes = ('plane', 'car', 'bird', 'cat',
-		   'deer', 'dog', 'frog', 'horse', 'ship', 'truck') 
+classes =  ('airplane', 'bird', 'car', 'cat', 'deer', 'dog', 'horse', 'monkey', 'ship', 'truck')
 
 # In[4]:
 
@@ -226,7 +235,7 @@ loss = MMD_loss()
 
 
 adversary = adversary_PGD
-FOLDER = '/adversary_PGD'
+FOLDER = './adversary_PGD/'
 
 
 
@@ -249,6 +258,9 @@ DCT_untargeted = 0
 DCT_targeted = 0
 	
 for cln_data, true_label in testloader:
+
+	print("working for fold number :", fold,"\n")
+
 	cln_data, true_label = cln_data.to(device), true_label.to(device)   
 	true = np.concatenate((true, true_label.cpu().numpy().astype(int)), axis=None)
 	
@@ -297,7 +309,7 @@ for cln_data, true_label in testloader:
 		MMD_targeted = np.append(MMD_targeted,loss(torch.from_numpy(dct_adv_targeted), torch.from_numpy(dct_image)).cpu().item())
 		MMD_untargeted = np.append(MMD_untargeted,loss(torch.from_numpy(dct_adv_untargeted), torch.from_numpy(dct_image)).cpu().item())
 	fold += 1
-	if(fold > 10):
+	if(fold > num_folds):
 		break
 		
 ####################################
@@ -419,3 +431,5 @@ for ii in range(num_plots):
 plt.tight_layout()
 plt.savefig(FOLDER+'test.png')
 
+
+# %%

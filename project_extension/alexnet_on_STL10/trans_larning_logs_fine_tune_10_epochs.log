@@ -1,0 +1,53 @@
+Files already downloaded and verified
+Epoch 0/9
+----------
+train Loss: 1.2660 Acc: 55.8800
+val Loss: 0.8952 Acc: 67.0000
+
+Epoch 1/9
+----------
+train Loss: 0.9702 Acc: 65.3600
+val Loss: 0.8004 Acc: 70.8800
+
+Epoch 2/9
+----------
+train Loss: 0.8656 Acc: 69.0200
+val Loss: 0.8359 Acc: 69.1200
+
+Epoch 3/9
+----------
+train Loss: 0.8059 Acc: 71.1800
+val Loss: 0.7041 Acc: 75.6000
+
+Epoch 4/9
+----------
+train Loss: 0.7886 Acc: 71.7600
+val Loss: 0.7093 Acc: 75.6200
+
+Epoch 5/9
+----------
+train Loss: 0.7436 Acc: 73.3600
+val Loss: 0.7631 Acc: 72.9000
+
+Epoch 6/9
+----------
+train Loss: 0.7081 Acc: 74.3000
+val Loss: 0.6537 Acc: 77.2000
+
+Epoch 7/9
+----------
+train Loss: 0.6939 Acc: 74.9200
+val Loss: 0.7053 Acc: 75.0800
+
+Epoch 8/9
+----------
+train Loss: 0.6831 Acc: 75.8600
+val Loss: 0.6297 Acc: 78.8400
+
+Epoch 9/9
+----------
+train Loss: 0.6530 Acc: 75.7600
+val Loss: 0.6231 Acc: 77.8600
+
+Training complete in 22m 10s
+Best val Acc: 78.839996
