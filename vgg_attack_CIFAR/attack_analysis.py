@@ -149,13 +149,22 @@ else:
 '''
 
 
+from CPU_utils import make_and_restore_model_CPU_only
+
 MODEL = "cifar_nat.pt"
 
 ds = CIFAR('data/cifar-10-batches-py')
-model, _ = make_and_restore_model(arch='resnet50', dataset=ds,
-             resume_path=MODEL, parallel=False)
+
+if use_cuda:
+	model, _ = make_and_restore_model(arch='resnet50', dataset=ds,
+			resume_path=MODEL, parallel=False)
+else:
+	model, _ = make_and_restore_model_CPU_only(arch='resnet50', dataset=ds,
+				resume_path=MODEL, parallel=False)
+
 model = model.model
 model.eval()
+
 
 
 ####################################
