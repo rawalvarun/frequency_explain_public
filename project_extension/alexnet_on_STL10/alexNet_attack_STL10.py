@@ -183,7 +183,7 @@ model.eval()
 # load data
 ####################################
 batch_size = 200
-num_folds = 0
+num_folds = 10
 
 
 transform=transforms.Compose([
@@ -194,7 +194,7 @@ transform=transforms.Compose([
                     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
                 ])
 
-testset = torchvision.datasets.STL10(root='../data',download=True, transform=transform)
+testset = torchvision.datasets.STL10(root='../data',split='test', download=True, transform=transform)
 testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,shuffle=False, num_workers=0)
 
 classes =  ('airplane', 'bird', 'car', 'cat', 'deer', 'dog', 'horse', 'monkey', 'ship', 'truck')
@@ -233,203 +233,219 @@ loss = MMD_loss()
 # FOLDER = 'adversary_CW/'
 
 
+attack_map = {
+	'./adversary_PGD/' : adversary_PGD,
+	'./adversary_CW/' : adversary_CW,
+	'./adversary_Jacobian/' : adversary_Jacobian,
+	'./adversary_FGSM/' : adversary_FGSM
+}
 
 adversary = adversary_PGD
 FOLDER = './adversary_PGD/'
 
+for FOLDER in attack_map:
+
+	print("starting attack : for ", FOLDER, "\n\n")
+
+	adversary = attack_map[FOLDER]
+
+	filetxt = FOLDER+'output.txt'
+	if not os.path.exists(FOLDER):
+		os.makedirs(FOLDER)
+
+	true = np.zeros((0)).astype(int)
+	pred_cln = np.zeros((0)).astype(int)
+	pred_untargeted_adv = np.zeros((0)).astype(int)
+	pred_targeted_adv = np.zeros((0)).astype(int)
+
+	MMD_untargeted = np.zeros((0))
+	MMD_targeted = np.zeros((0))
 
 
-
-filetxt = FOLDER+'output.txt'
-if not os.path.exists(FOLDER):
-	os.makedirs(FOLDER)
-
-true = np.zeros((0)).astype(int)
-pred_cln = np.zeros((0)).astype(int)
-pred_untargeted_adv = np.zeros((0)).astype(int)
-pred_targeted_adv = np.zeros((0)).astype(int)
-
-MMD_untargeted = np.zeros((0))
-MMD_targeted = np.zeros((0))
-
-
-fold = 0
-DCT_untargeted = 0
-DCT_targeted = 0
-	
-for cln_data, true_label in testloader:
-
-	print("working for fold number :", fold,"\n")
-
-	cln_data, true_label = cln_data.to(device), true_label.to(device)   
-	true = np.concatenate((true, true_label.cpu().numpy().astype(int)), axis=None)
-	
-	_, pred_cln_ = torch.max(model(cln_data), 1)
-	pred_cln = np.concatenate((pred_cln, pred_cln_.cpu().numpy().astype(int)), axis=None)    
-	
-	####################################
-	#Perform untargeted attack
-	####################################
-	
-	print("starting untargeted attack")
-	adv_untargeted = adversary.perturb(cln_data, true_label)
-	print("Completed untargeted attack !")
-
-
-	_, pred_untargeted_adv_ = torch.max(model(adv_untargeted), 1)
-	pred_untargeted_adv = np.concatenate((pred_untargeted_adv, pred_untargeted_adv_.cpu().numpy().astype(int)), axis=None)
-	
-	####################################
-	# perform targeted attack
-	####################################
-	target = torch.ones_like(true_label) * 3
-	adversary.targeted = True
-	
-
-	print("starting targeted attack ...")
-	adv_targeted = adversary.perturb(cln_data, target)
-	print("Completed untargeted attack !")
-	
-	_, pred_adv_targeted_ = torch.max(model(adv_targeted), 1)
-	pred_targeted_adv = np.concatenate((pred_targeted_adv, pred_adv_targeted_.cpu().numpy().astype(int)), axis=None)
-
-	for i in range(len(true_label)):
-		image = np.transpose(adv_untargeted[i].cpu().numpy(), (1, 2, 0))
-		dct_adv_untargeted = ((DCT(image[:,:,0]) + DCT(image[:,:,1]) + DCT(image[:,:,2]))/3.0)
-
-		image = np.transpose(adv_targeted[i].cpu().numpy(), (1, 2, 0))
-		dct_adv_targeted = ((DCT(image[:,:,0]) + DCT(image[:,:,1]) + DCT(image[:,:,2]))/3.0)
-
-		image = np.transpose(cln_data[i].cpu().numpy(), (1, 2, 0))
-		dct_image = ((DCT(image[:,:,0]) + DCT(image[:,:,1]) + DCT(image[:,:,2]))/3.0)
-
-		DCT_untargeted = DCT_untargeted + abs((dct_image - dct_adv_untargeted)/dct_image)
-		DCT_targeted = DCT_targeted + abs((dct_image - dct_adv_targeted)/dct_image)
-
-		MMD_targeted = np.append(MMD_targeted,loss(torch.from_numpy(dct_adv_targeted), torch.from_numpy(dct_image)).cpu().item())
-		MMD_untargeted = np.append(MMD_untargeted,loss(torch.from_numpy(dct_adv_untargeted), torch.from_numpy(dct_image)).cpu().item())
-	fold += 1
-	if(fold > num_folds):
-		break
+	fold = 0
+	DCT_untargeted = 0
+	DCT_targeted = 0
 		
-####################################
-# Visualization of attacks
-####################################
+	for cln_data, true_label in testloader:
 
-acc_adv_untargeted = 100*np.mean(true == pred_untargeted_adv)
-acc_adv_targeted = 100*np.mean(true == pred_targeted_adv)
-acc_cln = 100*np.mean(true == pred_cln)
+		print("working for fold number :", fold,"\n")
 
-print('Total Accuracy: ',"Unattacked: ", acc_cln, 
-	  '\t and during attack: ',FOLDER,'\t',
-	  
-	  "Untargeted attack: ",acc_adv_untargeted,
-	  "\tTargeted attack: ",acc_adv_targeted,
-	 file=open(filetxt, "a"))
+		cln_data, true_label = cln_data.to(device), true_label.to(device)   
+		true = np.concatenate((true, true_label.cpu().numpy().astype(int)), axis=None)
 
-correct_pred_indx = (true == pred_cln)
-acc_adv_untargeted = 100*np.mean(true[correct_pred_indx] == pred_untargeted_adv[correct_pred_indx])
-acc_adv_targeted = 100*np.mean(true[correct_pred_indx] == pred_targeted_adv[correct_pred_indx])
-print('Effect of attack on accurately predcited image by unattacked model:\t'      
-	  "Untargeted attack: ",acc_adv_untargeted,
-	  "\tTargeted attack: ",acc_adv_targeted,
-	 file=open(filetxt, "a"))
+		_, pred_cln_ = torch.max(model(cln_data), 1)
+		pred_cln = np.concatenate((pred_cln, pred_cln_.cpu().numpy().astype(int)), axis=None) 
+		
+		compare_prediction_label = (pred_cln == true)
 
-DCT_untargeted = (DCT_untargeted/len(true))
-DCT_targeted = (DCT_targeted/len(true))
+		good_samples = [i for i, x in enumerate(compare_prediction_label) if x == True]
 
-fig, ax = plt.subplots(1,1,figsize=(6, 6))
-im1 = ax.imshow(lscale01(DCT_untargeted), cmap='YlOrRd')
-ax.title.set_text('untargeted')
-divider = make_axes_locatable(ax)
-cax = divider.append_axes("right", size="5%", pad=0.05)    
-fig.colorbar(im1, cax=cax)
-# ax.set_axis_off()
-plt.savefig(FOLDER+'correct_DCT_untargeted.png')
-# plt.show()
-
-fig, ax = plt.subplots(1,1,figsize=(6, 6))
-im1 = ax.imshow(lscale01(DCT_targeted), cmap='YlOrRd')
-ax.title.set_text('targeted')
-divider = make_axes_locatable(ax)
-cax = divider.append_axes("right", size="5%", pad=0.05)    
-fig.colorbar(im1, cax=cax)
-# ax.set_axis_off()
-plt.savefig(FOLDER+'correct_DCT_targeted.png')
-# plt.show()
+		####################################
+		#Perform untargeted attack
+		####################################
+		
+		print("starting untargeted attack")
+		adv_untargeted = adversary.perturb(cln_data, true_label)
+		print("Completed untargeted attack !")
 
 
-c_indx_untargeted = np.logical_and(true == pred_cln,true == pred_untargeted_adv)
-c_indx_targeted = np.logical_and(true == pred_cln,true == pred_targeted_adv)
+		_, pred_untargeted_adv_ = torch.max(model(adv_untargeted), 1)
+		pred_untargeted_adv = np.concatenate((pred_untargeted_adv, pred_untargeted_adv_.cpu().numpy().astype(int)), axis=None)
+		
+		####################################
+		# perform targeted attack
+		####################################
+		target = torch.ones_like(true_label) * 3
+		adversary.targeted = True
+		
 
-true_pred_untargeted = np.sum(c_indx_untargeted)/np.sum(correct_pred_indx)
-true_pred_targeted = np.sum(c_indx_targeted)/np.sum(correct_pred_indx)
+		print("starting targeted attack ...")
+		adv_targeted = adversary.perturb(cln_data, target)
+		print("Completed untargeted attack !")
+		
+		_, pred_adv_targeted_ = torch.max(model(adv_targeted), 1)
+		pred_targeted_adv = np.concatenate((pred_targeted_adv, pred_adv_targeted_.cpu().numpy().astype(int)), axis=None)
 
-w_indx_untargeted = np.logical_and(true == pred_cln,true != pred_untargeted_adv)
-w_indx_targeted = np.logical_and(true == pred_cln,true != pred_targeted_adv)
+		for i in range(len(true_label)):
+			image = np.transpose(adv_untargeted[i].cpu().numpy(), (1, 2, 0))
+			dct_adv_untargeted = ((DCT(image[:,:,0]) + DCT(image[:,:,1]) + DCT(image[:,:,2]))/3.0)
 
-false_pred_untargeted = np.sum(w_indx_untargeted)/np.sum(correct_pred_indx)
-false_pred_targeted = np.sum(w_indx_targeted)/np.sum(correct_pred_indx)
+			image = np.transpose(adv_targeted[i].cpu().numpy(), (1, 2, 0))
+			dct_adv_targeted = ((DCT(image[:,:,0]) + DCT(image[:,:,1]) + DCT(image[:,:,2]))/3.0)
 
-print("True pred accuracy of samples: ",100*true_pred_untargeted,100*true_pred_targeted,
-	 file=open(filetxt, "a"))
-print("wrong pred accuracy of samples: ",100*false_pred_untargeted,100*false_pred_targeted,
-	 file=open(filetxt, "a"))
+			image = np.transpose(cln_data[i].cpu().numpy(), (1, 2, 0))
+			dct_image = ((DCT(image[:,:,0]) + DCT(image[:,:,1]) + DCT(image[:,:,2]))/3.0)
 
-print("Total mean MMD: ", np.mean(MMD_untargeted), 
-	  np.mean(MMD_targeted),
-	 file=open(filetxt, "a"))
-print("Correct mean MMD: ", np.mean(MMD_untargeted[c_indx_untargeted]), 
-	  np.mean(MMD_targeted[c_indx_targeted]),
-	 file=open(filetxt, "a"))
-print("wrong mean MMD: ", np.mean(MMD_untargeted[w_indx_untargeted == 0]), 
-	  np.mean(MMD_targeted[w_indx_targeted == 0]),
-	 file=open(filetxt, "a"))
+			DCT_untargeted = DCT_untargeted + abs((dct_image - dct_adv_untargeted)/dct_image)
+			DCT_targeted = DCT_targeted + abs((dct_image - dct_adv_targeted)/dct_image)
 
-fig, ax = plt.subplots(1,1,figsize=(6, 6))
-plt.hist(MMD_untargeted,bins=100, weights=100*np.ones(len(MMD_untargeted)) / len(MMD_untargeted))
-plt.xlabel("MMD_untargeted")
-plt.ylabel("% of images")
-plt.title('Histogram of MMD_untargeted')
-plt.axvline(np.mean(MMD_untargeted), color='k', linestyle='dashed', linewidth=1)
-plt.savefig(FOLDER+'hist_untargeted.png')
-# plt.show()
+			MMD_targeted = np.append(MMD_targeted,loss(torch.from_numpy(dct_adv_targeted), torch.from_numpy(dct_image)).cpu().item())
+			MMD_untargeted = np.append(MMD_untargeted,loss(torch.from_numpy(dct_adv_untargeted), torch.from_numpy(dct_image)).cpu().item())
+		fold += 1
+		if(fold > num_folds):
+			break
+			
+	####################################
+	# Visualization of attacks
+	####################################
 
-fig, ax = plt.subplots(1,1,figsize=(6, 6))
-plt.hist(MMD_targeted,bins=100, weights=100*np.ones(len(MMD_targeted)) / len(MMD_targeted))
-plt.xlabel("MMD_targeted")
-plt.ylabel("% of images")
-plt.title('Histogram of MMD_targeted')
-plt.axvline(np.mean(MMD_untargeted), color='k', linestyle='dashed', linewidth=1)
-plt.savefig(FOLDER+'hist_targeted.png')
-# plt.show()
+	acc_adv_untargeted = 100*np.mean(true == pred_untargeted_adv)
+	acc_adv_targeted = 100*np.mean(true == pred_targeted_adv)
+	acc_cln = 100*np.mean(true == pred_cln)
 
+	print('Total Accuracy: ',"Unattacked: ", acc_cln, 
+		'\t and during attack: ',FOLDER,'\t',
+		
+		"Untargeted attack: ",acc_adv_untargeted,
+		"\tTargeted attack: ",acc_adv_targeted,
+		file=open(filetxt, "a"))
 
-# In[183]:
+	correct_pred_indx = (true == pred_cln)
+	acc_adv_untargeted = 100*np.mean(true[correct_pred_indx] == pred_untargeted_adv[correct_pred_indx])
+	acc_adv_targeted = 100*np.mean(true[correct_pred_indx] == pred_targeted_adv[correct_pred_indx])
+	print('Effect of attack on accurately predcited image by unattacked model:\t'      
+		"Untargeted attack: ",acc_adv_untargeted,
+		"\tTargeted attack: ",acc_adv_targeted,
+		file=open(filetxt, "a"))
 
+	DCT_untargeted = (DCT_untargeted/len(true))
+	DCT_targeted = (DCT_targeted/len(true))
 
-if use_cuda:
-	cln_data = cln_data.cpu()
-	true_label = true_label.cpu()
-	adv_untargeted = adv_untargeted.cpu()
-	adv_targeted = adv_targeted.cpu()
-	
+	fig, ax = plt.subplots(1,1,figsize=(6, 6))
+	im1 = ax.imshow(lscale01(DCT_untargeted), cmap='YlOrRd')
+	ax.title.set_text('untargeted')
+	divider = make_axes_locatable(ax)
+	cax = divider.append_axes("right", size="5%", pad=0.05)    
+	fig.colorbar(im1, cax=cax)
+	# ax.set_axis_off()
+	plt.savefig(FOLDER+'correct_DCT_untargeted.png')
+	# plt.show()
 
-plt.figure(figsize=(10, 8))
-num_plots = 8
-for ii in range(num_plots):
-	plt.subplot(3, num_plots, ii + 1)
-	_imshow(cln_data[ii])
-	plt.title("clean \n pred: {}".format(classes[pred_cln[ii]]))
-	plt.subplot(3, num_plots, ii + 1 + num_plots)
-	_imshow(adv_untargeted[ii])
-	plt.title("untargeted \n adv \n pred: {}".format(classes[pred_untargeted_adv[ii]]))
-	plt.subplot(3, num_plots, ii + 1 + num_plots * 2)
-	_imshow(adv_targeted[ii])
-	plt.title("target cat \n adv \n pred: {}".format(classes[pred_targeted_adv[ii]]))
-
-plt.tight_layout()
-plt.savefig(FOLDER+'test.png')
+	fig, ax = plt.subplots(1,1,figsize=(6, 6))
+	im1 = ax.imshow(lscale01(DCT_targeted), cmap='YlOrRd')
+	ax.title.set_text('targeted')
+	divider = make_axes_locatable(ax)
+	cax = divider.append_axes("right", size="5%", pad=0.05)    
+	fig.colorbar(im1, cax=cax)
+	# ax.set_axis_off()
+	plt.savefig(FOLDER+'correct_DCT_targeted.png')
+	# plt.show()
 
 
-# %%
+	c_indx_untargeted = np.logical_and(true == pred_cln,true == pred_untargeted_adv)
+	c_indx_targeted = np.logical_and(true == pred_cln,true == pred_targeted_adv)
+
+	true_pred_untargeted = np.sum(c_indx_untargeted)/np.sum(correct_pred_indx)
+	true_pred_targeted = np.sum(c_indx_targeted)/np.sum(correct_pred_indx)
+
+	w_indx_untargeted = np.logical_and(true == pred_cln,true != pred_untargeted_adv)
+	w_indx_targeted = np.logical_and(true == pred_cln,true != pred_targeted_adv)
+
+	false_pred_untargeted = np.sum(w_indx_untargeted)/np.sum(correct_pred_indx)
+	false_pred_targeted = np.sum(w_indx_targeted)/np.sum(correct_pred_indx)
+
+	print("True pred accuracy of samples: ",100*true_pred_untargeted,100*true_pred_targeted,
+		file=open(filetxt, "a"))
+	print("wrong pred accuracy of samples: ",100*false_pred_untargeted,100*false_pred_targeted,
+		file=open(filetxt, "a"))
+
+	print("Total mean MMD: ", np.mean(MMD_untargeted), 
+		np.mean(MMD_targeted),
+		file=open(filetxt, "a"))
+	print("Correct mean MMD: ", np.mean(MMD_untargeted[c_indx_untargeted]), 
+		np.mean(MMD_targeted[c_indx_targeted]),
+		file=open(filetxt, "a"))
+	print("wrong mean MMD: ", np.mean(MMD_untargeted[w_indx_untargeted == 0]), 
+		np.mean(MMD_targeted[w_indx_targeted == 0]),
+		file=open(filetxt, "a"))
+
+	fig, ax = plt.subplots(1,1,figsize=(6, 6))
+	plt.hist(MMD_untargeted,bins=100, weights=100*np.ones(len(MMD_untargeted)) / len(MMD_untargeted))
+	plt.xlabel("MMD_untargeted")
+	plt.ylabel("% of images")
+	plt.title('Histogram of MMD_untargeted')
+	plt.axvline(np.mean(MMD_untargeted), color='k', linestyle='dashed', linewidth=1)
+	plt.savefig(FOLDER+'hist_untargeted.png')
+	# plt.show()
+
+	fig, ax = plt.subplots(1,1,figsize=(6, 6))
+	plt.hist(MMD_targeted,bins=100, weights=100*np.ones(len(MMD_targeted)) / len(MMD_targeted))
+	plt.xlabel("MMD_targeted")
+	plt.ylabel("% of images")
+	plt.title('Histogram of MMD_targeted')
+	plt.axvline(np.mean(MMD_untargeted), color='k', linestyle='dashed', linewidth=1)
+	plt.savefig(FOLDER+'hist_targeted.png')
+	# plt.show()
+
+
+	# In[183]:
+
+
+	if use_cuda:
+		cln_data = cln_data.cpu()
+		true_label = true_label.cpu()
+		adv_untargeted = adv_untargeted.cpu()
+		adv_targeted = adv_targeted.cpu()
+		
+
+	plt.figure(figsize=(10, 8))
+	num_plots = 8
+	for jj in range(num_plots):
+
+		ii = good_samples[jj]
+
+		plt.subplot(3, num_plots, jj + 1)
+		_imshow(cln_data[ii])
+		plt.title("clean \n pred: {}".format(classes[pred_cln[ii]]))
+		plt.subplot(3, num_plots, jj + 1 + num_plots)
+		_imshow(adv_untargeted[ii])
+		plt.title("untargeted \n adv \n pred: {}".format(classes[pred_untargeted_adv[ii]]))
+		plt.subplot(3, num_plots, jj + 1 + num_plots * 2)
+		_imshow(adv_targeted[ii])
+		plt.title("target cat \n adv \n pred: {}".format(classes[pred_targeted_adv[ii]]))
+
+	plt.tight_layout()
+	plt.savefig(FOLDER+'test.png')
+
+
+	# %%

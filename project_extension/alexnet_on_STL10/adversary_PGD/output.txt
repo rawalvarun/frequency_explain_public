@@ -1,0 +1,37 @@
+Total Accuracy:  Unattacked:  78.0 	 and during attack:  ./adversary_PGD/ 	 Untargeted attack:  0.0 	Targeted attack:  9.0
+Effect of attack on accurately predcited image by unattacked model:	Untargeted attack:  0.0 	Targeted attack:  6.41025641025641
+True pred accuracy of samples:  0.0 6.41025641025641
+wrong pred accuracy of samples:  100.0 93.58974358974359
+Total mean MMD:  0.11426871828502044 0.11579447226133198
+Correct mean MMD:  nan 0.12347816862165928
+wrong mean MMD:  0.11683170334436 0.11932590436535301
+Total Accuracy:  Unattacked:  79.25 	 and during attack:  ./adversary_PGD/ 	 Untargeted attack:  82.83333333333334 	Targeted attack:  10.25
+Effect of attack on accurately predcited image by unattacked model:	Untargeted attack:  82.86014721345951 	Targeted attack:  7.991587802313354
+True pred accuracy of samples:  82.86014721345951 7.991587802313354
+wrong pred accuracy of samples:  17.139852786540484 92.00841219768665
+Total mean MMD:  0.11613456036895514 0.11553954298142344
+Correct mean MMD:  0.11722259801401175 0.12370586973664008
+wrong mean MMD:  0.11686516490656247 0.1171809039150293
+Total Accuracy:  Unattacked:  75.75 	 and during attack:  ./adversary_PGD/ 	 Untargeted attack:  49.75 	Targeted attack:  8.25
+Effect of attack on accurately predcited image by unattacked model:	Untargeted attack:  50.165016501650165 	Targeted attack:  5.6105610561056105
+True pred accuracy of samples:  50.165016501650165 5.6105610561056105
+wrong pred accuracy of samples:  49.834983498349835 94.38943894389439
+Total mean MMD:  0.11423882423259783 0.11435616167029367
+Correct mean MMD:  0.11658534339145071 0.11316319949486676
+wrong mean MMD:  0.11603923599856596 0.1153409470019764
+Total Accuracy:  Unattacked:  78.375 	 and during attack:  ./adversary_PGD/ 	 Untargeted attack:  0.0 	Targeted attack:  0.0
+Total Accuracy:  Unattacked:  78.5 	 and during attack:  ./adversary_PGD/ 	 Untargeted attack:  0.0 	Targeted attack:  9.0
+Effect of attack on accurately predcited image by unattacked model:	Untargeted attack:  0.0 	Targeted attack:  6.369426751592357
+True pred accuracy of samples:  0.0 6.369426751592357
+wrong pred accuracy of samples:  100.0 93.63057324840764
+Total mean MMD:  0.11107709621544927 0.11219744220841676
+Correct mean MMD:  nan 0.13762105330824853
+wrong mean MMD:  0.11041480839945549 0.11672915397036188
+Total Accuracy:  Unattacked:  78.16666666666666 	 and during attack:  ./adversary_PGD/ 	 Untargeted attack:  0.0 	Targeted attack:  0.0
+Total Accuracy:  Unattacked:  73.0 	 and during attack:  ./adversary_PGD/ 	 Untargeted attack:  90.22727272727272 	Targeted attack:  9.863636363636363
+Effect of attack on accurately predcited image by unattacked model:	Untargeted attack:  90.41095890410958 	Targeted attack:  8.032378580323787
+True pred accuracy of samples:  90.41095890410958 8.032378580323787
+wrong pred accuracy of samples:  9.58904109589041 91.96762141967622
+Total mean MMD:  0.11467970119619911 0.1148195209900256
+Correct mean MMD:  0.1167127775014237 0.1269432414005431
+wrong mean MMD:  0.11545186405701022 0.11512498042184247
