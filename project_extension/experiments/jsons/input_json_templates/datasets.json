@@ -1,5 +1,8 @@
 [
-    {"dataset" : "STL10"},
+    {
+        "dataset" : "STL10",
+        "classes" :  ["airplane", "bird", "car", "cat", "deer", "dog", "horse", "monkey", "ship", "truck"]
+    },
     {"dataset" : "MNIST"},
     {"dataset" : "SVHN"},
     {"dataset" : "Fashion-MNIST"},
