@@ -1,0 +1,65 @@
+[
+    {
+        "attack" : "GradientAttack"
+    },
+    {
+        "attack" : "GradientSignAttack"
+    },
+    {
+        "attack" : "FastFeatureAttack"
+    },
+    {
+        "attack" : "L2BasicIterativeAttack"
+    },
+    {
+        "attack" : "LinfBasicIterativeAttack"
+    },
+    {
+        "attack" : "PGDAttack"
+    },
+    {
+        "attack" : "LinfPGDAttack"
+    },
+    {
+        "attack" : "L2PGDAttack"
+    },
+    {
+        "attack" : "L1PGDAttack"
+    },
+    {
+        "attack" : "SparseL1DescentAttack"
+    },
+    {
+        "attack" : "MomentumIterativeAttack"
+    },
+    {
+        "attack" : "LinfMomentumIterativeAttack"
+    },
+    {
+        "attack" : "L2MomentumIterativeAttack"
+    },
+    {
+        "attack" : "CarliniWagnerL2Attack"
+    },
+    {
+        "attack" : "ElasticNetL1Attack"
+    },
+    {
+        "attack" : "DDNL2Attack"
+    },
+    {
+        "attack" : "LBFGSAttack"
+    },
+    {
+        "attack" : "SinglePixelAttack"
+    },
+    {
+        "attack" : "LocalSearchAttack"
+    },
+    {
+        "attack" : "SpatialTransformAttack"
+    },
+    {
+        "attack" : "JacobianSaliencyMapAttack"
+    }
+]
