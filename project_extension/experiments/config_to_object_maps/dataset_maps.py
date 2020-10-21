@@ -32,8 +32,6 @@ map_config_to_dataset["CIFAR-10"] = {
 }
 
 map_config_to_dataset["SVHN"] = {
-    "train" : torchvision.datasets.CIFAR10(root='../data', train=True,download=True, transform=transform),
-    "test" : torchvision.datasets.CIFAR10(root='../data', train=False, download=True, transform=transform)
+    "train" : torchvision.datasets.SVHN(root, split='train', transform=transform, download=False),
+    "test" : torchvision.datasets.SVHN(root, split='test', transform=transform, download=False)
 }
-
-torchvision.datasets.SVHN(root, split='train', transform=None, target_transform=None, download=False)
