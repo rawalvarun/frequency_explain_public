@@ -206,7 +206,7 @@ classes =  ('airplane', 'bird', 'car', 'cat', 'deer', 'dog', 'horse', 'monkey', 
 # Construct an adversary instance
 ####################################
 adversary_CW = CarliniWagnerL2Attack(model, num_classes = len(classes) , 
-	confidence=0, targeted=False, learning_rate=0.01, binary_search_steps=9, max_iterations=10000, 
+	confidence=0, targeted=False, learning_rate=0.01, binary_search_steps=9, max_iterations=10, 
 	abort_early=True, initial_const=0.001, clip_min=0.0, clip_max=1.0, loss_fn=None)
 
 adversary_Jacobian = JacobianSaliencyMapAttack(model, num_classes = len(classes), 
@@ -217,8 +217,8 @@ adversary_PGD = LinfPGDAttack(
 	nb_iter=40, eps_iter=0.01, rand_init=True, clip_min=0.0, clip_max=1.0,
 	targeted=False)
 
-adversary_FGSM = LBFGSAttack(model, num_classes = len(classes), batch_size=1, binary_search_steps=9, 
-	max_iterations=100, initial_const=0.01, clip_min=0, clip_max=1, loss_fn=None, targeted=False)
+adversary_FGSM = LBFGSAttack(model, num_classes = len(classes), batch_size=1, binary_search_steps=5, 
+	max_iterations=10, initial_const=0.01, clip_min=0, clip_max=1, loss_fn=None, targeted=False)
 
 
 # In[22]:

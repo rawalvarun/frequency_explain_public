@@ -1,0 +1,30 @@
+[
+    {
+        "CNN_Model" : "AlexNet",
+        "model_id" : "alexnet"
+    },
+    {
+        "CNN_Model" : "SqueezeNet",
+        "model_id" : "squeezenet"
+    },
+    {
+        "CNN_Model" : "DenseNet",
+        "model_id" : "densenet"
+    },
+    {
+        "CNN_Model" : "Inception",
+        "model_id" : "inception"
+    },
+    {
+        "CNN_Model" : "GoogleNet",
+        "model_id": "googlenet"
+    },
+    {
+        "CNN_Model" : "ShuffleNet",
+        "model_id":"shufflenet"
+    },
+    {
+        "CNN_Model" : "Mobilenet",
+        "model_id" : "mobilenet"
+    }
+]
