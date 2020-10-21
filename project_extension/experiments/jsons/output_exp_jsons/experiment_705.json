@@ -1,0 +1,1 @@
+{"CNN_Model": "GoogleNet", "model_id": "googlenet", "dataset": "STL10", "attack": "JacobianSaliencyMapAttack", "experiment": "Model-Attack-Dataset"}

@@ -1,0 +1,1 @@
+{"CNN_Model": "ShuffleNet", "model_id": "shufflenet", "dataset": "Fashion-MNIST", "attack": "LinfPGDAttack", "experiment": "Model-Attack-Dataset"}

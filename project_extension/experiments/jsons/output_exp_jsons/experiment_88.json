@@ -1,0 +1,1 @@
+{"CNN_Model": "Inception", "model_id": "inception", "dataset": "SVHN", "attack": "FastFeatureAttack", "experiment": "Model-Attack-Dataset"}

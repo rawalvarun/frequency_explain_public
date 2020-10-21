@@ -1,0 +1,1 @@
+{"CNN_Model": "ShuffleNet", "model_id": "shufflenet", "dataset": "CIFAR-10", "attack": "LinfMomentumIterativeAttack", "experiment": "Model-Attack-Dataset"}

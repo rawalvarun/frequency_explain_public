@@ -1,0 +1,1 @@
+{"CNN_Model": "Mobilenet", "model_id": "mobilenet", "dataset": "CIFAR-10", "attack": "DDNL2Attack", "experiment": "Model-Attack-Dataset"}

@@ -1,0 +1,1 @@
+{"CNN_Model": "DenseNet", "model_id": "densenet", "dataset": "MNIST", "attack": "GradientAttack", "experiment": "Model-Attack-Dataset"}

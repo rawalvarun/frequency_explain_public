@@ -1,0 +1,1 @@
+{"CNN_Model": "Mobilenet", "model_id": "mobilenet", "dataset": "Fashion-MNIST", "attack": "SparseL1DescentAttack", "experiment": "Model-Attack-Dataset"}

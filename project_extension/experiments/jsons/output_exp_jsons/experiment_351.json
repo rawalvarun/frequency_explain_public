@@ -1,0 +1,1 @@
+{"CNN_Model": "AlexNet", "model_id": "alexnet", "dataset": "STL10", "attack": "MomentumIterativeAttack", "experiment": "Model-Attack-Dataset"}

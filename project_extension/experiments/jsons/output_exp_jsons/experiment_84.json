@@ -1,0 +1,1 @@
+{"CNN_Model": "Mobilenet", "model_id": "mobilenet", "dataset": "MNIST", "attack": "FastFeatureAttack", "experiment": "Model-Attack-Dataset"}

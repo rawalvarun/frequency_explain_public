@@ -1,0 +1,1 @@
+{"CNN_Model": "Mobilenet", "model_id": "mobilenet", "dataset": "SVHN", "attack": "MomentumIterativeAttack", "experiment": "Model-Attack-Dataset"}

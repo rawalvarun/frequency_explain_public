@@ -1,0 +1,1 @@
+{"CNN_Model": "SqueezeNet", "model_id": "squeezenet", "dataset": "Fashion-MNIST", "attack": "GradientSignAttack", "experiment": "Model-Attack-Dataset"}

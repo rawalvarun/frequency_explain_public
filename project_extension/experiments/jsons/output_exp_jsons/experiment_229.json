@@ -1,0 +1,1 @@
+{"CNN_Model": "GoogleNet", "model_id": "googlenet", "dataset": "SVHN", "attack": "LinfPGDAttack", "experiment": "Model-Attack-Dataset"}

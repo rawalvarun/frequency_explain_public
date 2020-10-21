@@ -1,0 +1,1 @@
+{"CNN_Model": "GoogleNet", "model_id": "googlenet", "dataset": "CIFAR-10", "attack": "ElasticNetL1Attack", "experiment": "Model-Attack-Dataset"}

@@ -1,0 +1,1 @@
+{"CNN_Model": "ShuffleNet", "model_id": "shufflenet", "dataset": "SVHN", "attack": "GradientSignAttack", "experiment": "Model-Attack-Dataset"}

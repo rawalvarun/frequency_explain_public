@@ -1,0 +1,1 @@
+{"CNN_Model": "ShuffleNet", "model_id": "shufflenet", "dataset": "MNIST", "attack": "SpatialTransformAttack", "experiment": "Model-Attack-Dataset"}

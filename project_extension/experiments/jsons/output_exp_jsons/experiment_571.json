@@ -1,0 +1,1 @@
+{"CNN_Model": "Inception", "model_id": "inception", "dataset": "MNIST", "attack": "LBFGSAttack", "experiment": "Model-Attack-Dataset"}
