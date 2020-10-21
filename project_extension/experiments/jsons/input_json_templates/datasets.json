@@ -1,0 +1,7 @@
+[
+    {"dataset" : "STL10"},
+    {"dataset" : "MNIST"},
+    {"dataset" : "SVHN"},
+    {"dataset" : "Fashion-MNIST"},
+    {"dataset" : "CIFAR-10"}
+]

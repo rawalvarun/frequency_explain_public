@@ -24,7 +24,7 @@
         "model_id":"shufflenet"
     },
     {
-        "CNN_Model" : "Mobilenet",
+        "CNN_Model" : "Mobilenet", 
         "model_id" : "mobilenet"
     }
 ]
