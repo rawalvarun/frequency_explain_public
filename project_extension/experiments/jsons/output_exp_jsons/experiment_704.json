@@ -1,1 +1,1 @@
-{"CNN_Model": "Inception", "model_id": "inception", "dataset": "STL10", "attack": "JacobianSaliencyMapAttack", "experiment": "Model-Attack-Dataset"}
+{"CNN_Model": "Inception", "model_id": "inception", "dataset": "STL10", "classes": ["airplane", "bird", "car", "cat", "deer", "dog", "horse", "monkey", "ship", "truck"], "attack": "JacobianSaliencyMapAttack", "experiment": "Model-Attack-Dataset"}

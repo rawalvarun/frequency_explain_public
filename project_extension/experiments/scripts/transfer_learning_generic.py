@@ -24,9 +24,11 @@ import matplotlib.pyplot as plt
 from argparse import ArgumentParser
 
 parser = ArgumentParser(description="Generic experiment execution script")
-parser.add_argument("-f", "--spec-file", type=str,
+parser.add_argument("-f", "--spec-file", type=str, required=True,
                     help="Path to experiment specification JSON file")
-parser.add_argument("-v", "--verbose", action="store_true",
+parser.add_argument("-t", "--fine-tune", type=bool, required=True,
+                    help="Whether to ONLY fine tune the last layer or train all the weights")
+parser.add_argument("-v", "--verbose", action="store_true", required=False, default=True
                     help="Make the pogram more verbose")
 
 
@@ -34,7 +36,13 @@ parser.add_argument("-v", "--verbose", action="store_true",
 _cnn_model_ = experiment_spec_json["CNN_Model"]
 _cnn_model_id_ = experiment_spec_json["model_id"]
 
-model = alexnet
+_dataset_ = experiment_spec_json["dataset"]
+
+experiment_spec_config_ID = f"_dataset={_dataset_}_model_={_cnn_model_}_"
+
+from config_to_object_maps import model_maps, dataset_maps
+
+model = model_maps[_cnn_model_]
 
 from collections import OrderedDict 
  
@@ -42,35 +50,27 @@ from collections import OrderedDict
 use_gpu = torch.cuda.is_available()
 
 batch_size = 10
-transform=transforms.Compose([
-                    transforms.Pad(4),
-                    transforms.RandomCrop(96),
-                    transforms.RandomHorizontalFlip(),
-                    transforms.ToTensor(),
-                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-                ])
 
-trainset = torchvision.datasets.STL10(root='../data',split='train', download=True, transform=transform)
+trainset = dataset_maps[_dataset_]["train"]
 trainloaders = torch.utils.data.DataLoader(trainset, batch_size=batch_size,shuffle=False, num_workers=0)
 
-valset = torchvision.datasets.STL10(root='../data',split='test', download=True, transform=transform)
+valset = dataset_maps[_dataset_]["test"]
 valloaders = torch.utils.data.DataLoader(valset, batch_size=batch_size,shuffle=False, num_workers=0)
 
 
 train_size = len(trainset)
 val_size = len(valset)
 
-classes =  ('airplane', 'bird', 'car', 'cat', 'deer', 'dog', 'horse', 'monkey', 'ship', 'truck')
-
+classes =  experiment_spec_json["classes"]
 
 # for STL10 dataset, num_classes = 10
 final_num_classes = len(classes)
 
 
-
+args = parser.parse_args()
 # to control whether to just fine tune the last layers or to train the whole network
 # need to adjust num_epochs accordingly
-fine_tune_only = False
+fine_tune_only = args.fine_tune
 
 if fine_tune_only:
     _num_epochs_ = 10
@@ -78,21 +78,14 @@ else:
     _num_epochs_ = 20
 
 
-
 if fine_tune_only:
     for params in model.parameters(): 
         params.requires_grad = False 
  
-classifier = nn.Sequential(OrderedDict([ 
-    ('dp1',nn.Dropout(0.5)), 
-    ('fc1',nn.Linear(9216,4096)), 
-    ('relu1',nn.ReLU()),
-    ('dp2',nn.Dropout(0.5)), 
-    ('fc2',nn.Linear(4096,4096)), 
-    ('relu2',nn.ReLU()), 
-    ('fc3',nn.Linear(4096,final_num_classes)), 
-])) 
- 
+# verify and change the last layer of the model to match the number of classes
+assert(hasattr(model.classifier[-1], "out_features"))
+model.classifier[-1].out_features = final_num_classes
+
 model.classifier = classifier 
 
 for param in model.classifier.parameters():
@@ -108,7 +101,6 @@ fig.tight_layout()
 
 axs[0].set_autoscale_on(True)
 axs[1].set_autoscale_on(True)
-
 
 
 
@@ -223,6 +215,7 @@ def train_model(model, criterion, optimizer, num_epochs=25):
 
             fig.tight_layout()
 
+            plt.savefig('transfer_learning_train_{experiment_spec_config_ID}.png')
 
             #import pdb; pdb.set_trace()
 
@@ -248,7 +241,6 @@ def train_model(model, criterion, optimizer, num_epochs=25):
     return model
 
 
-
 criterion = nn.CrossEntropyLoss()
 
 # Observe that all parameters are being optimized
@@ -264,6 +256,4 @@ else:
 #exp_lr_scheduer = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 model = train_model(model, criterion, optimizer_ft, num_epochs=_num_epochs_)
 
-torch.save(model, "saved_alexnet_trans_learnt_fineTune="+str(fine_tune_only)+"_.pth")
-
-plt.savefig('transfer_learning_train.png')
+torch.save(model, f"saved_trans_learnt_fineTune={fine_tune_only}_{experiment_spec_config_ID}.pth")

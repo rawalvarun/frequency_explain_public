@@ -1,1 +1,1 @@
-{"CNN_Model": "Mobilenet", "model_id": "mobilenet", "dataset": "STL10", "attack": "SpatialTransformAttack", "experiment": "Model-Attack-Dataset"}
+{"CNN_Model": "Mobilenet", "model_id": "mobilenet", "dataset": "STL10", "classes": ["airplane", "bird", "car", "cat", "deer", "dog", "horse", "monkey", "ship", "truck"], "attack": "SpatialTransformAttack", "experiment": "Model-Attack-Dataset"}
