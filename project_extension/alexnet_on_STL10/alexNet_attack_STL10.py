@@ -426,7 +426,7 @@ for FOLDER in attack_map:
 		true_label = true_label.cpu()
 		adv_untargeted = adv_untargeted.cpu()
 		adv_targeted = adv_targeted.cpu()
-		
+
 
 	plt.figure(figsize=(10, 8))
 	num_plots = 8
@@ -449,3 +449,4 @@ for FOLDER in attack_map:
 
 
 	# %%
+
