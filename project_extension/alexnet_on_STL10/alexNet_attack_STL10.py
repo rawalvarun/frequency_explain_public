@@ -106,18 +106,22 @@ def lscale01(M):
 
 # In[3]:
 
-
-
 ####################################
 # imshow func
 ####################################
 def imshow(img):
+	img = img.cpu()
 	img = img / 2 + 0.5     # unnormalize
 	npimg = img.numpy()
 	plt.imshow(np.transpose(npimg, (1, 2, 0)))
 
 def _imshow(img):
-	imshow(torchvision.utils.make_grid(img))
+	img = img / 2 + 0.5     # unnormalize
+	# imshow(torchvision.utils.make_grid(img, normalize=True))
+
+	plt.imshow(torchvision.utils.make_grid(
+		img, normalize=True).numpy().transpose((1, 2, 0)))
+
 
 '''
 ####################################
@@ -276,8 +280,8 @@ for FOLDER in attack_map:
 		_, pred_cln_ = torch.max(model(cln_data), 1)
 		pred_cln = np.concatenate((pred_cln, pred_cln_.cpu().numpy().astype(int)), axis=None) 
 		
+		# select only good samples for showcasing
 		compare_prediction_label = (pred_cln == true)
-
 		good_samples = [i for i, x in enumerate(compare_prediction_label) if x == True]
 
 		####################################
@@ -426,7 +430,7 @@ for FOLDER in attack_map:
 		true_label = true_label.cpu()
 		adv_untargeted = adv_untargeted.cpu()
 		adv_targeted = adv_targeted.cpu()
-		
+
 
 	plt.figure(figsize=(10, 8))
 	num_plots = 8
@@ -449,3 +453,4 @@ for FOLDER in attack_map:
 
 
 	# %%
+
