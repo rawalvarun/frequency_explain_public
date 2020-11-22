@@ -10,8 +10,8 @@ from advertorch.attacks import LinfPGDAttack, CarliniWagnerL2Attack, JacobianSal
 from attack_pipeline import AttackPipeline
 
 
-model_filename = 'saved_alexnet_transfer_learnt_10classes.pth'
-out_folder = 'alexnet_finetune_BFGS'
+model_filename = 'mobilenet_tl/modelfile.pth'
+out_folder = 'mobilenet_BFGS'
 
 batch_size = 200
 num_folds = 10
