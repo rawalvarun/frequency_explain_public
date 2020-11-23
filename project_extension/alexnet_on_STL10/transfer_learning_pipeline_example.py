@@ -15,9 +15,9 @@ import os
 from os import path
 from transfer_learning_pipeline import TransferLearningPipeline
 
-model = models.mobilenet_v2(pretrained=True)
+model = models.squeezenet1_0(pretrained=True)
 
-model_adapt(model, 'mobilenet', num_classes=10, requires_grad=True)
+model_adapt(model, 'squeezenet', num_classes=10, requires_grad=True)
 
 optimizer = optim.SGD(model.adapt_layers.parameters(), lr=0.001, momentum=0.7)
 
@@ -25,7 +25,7 @@ loss_criterion = nn.CrossEntropyLoss()
 
 batch_size = 5
 num_epochs = 20
-out_folder = 'mobilenet_tl'
+out_folder = 'squeezenet_tl'
 
 transform = transforms.Compose([
     transforms.Pad(4),

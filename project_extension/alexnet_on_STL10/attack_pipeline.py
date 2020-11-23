@@ -76,6 +76,7 @@ class AttackPipeline:
             ####################################
             # Perform untargeted attack
             ####################################
+            self.adversary.targeted = False
 
             print("starting untargeted attack")
             adv_untargeted = self.adversary.perturb(cln_data, true_label)
@@ -95,9 +96,9 @@ class AttackPipeline:
             adv_targeted = self.adversary.perturb(cln_data, target)
             print("Completed targeted attack !")
 
-            _, pred_adv_targeted_ = torch.max(model(adv_targeted), 1)
+            _, pred_targeted_adv_ = torch.max(model(adv_targeted), 1)
             pred_targeted_adv = np.concatenate(
-                (pred_targeted_adv, pred_adv_targeted_.cpu().numpy().astype(int)), axis=None)
+                (pred_targeted_adv, pred_targeted_adv_.cpu().numpy().astype(int)), axis=None)
 
             ####################################
             # perform DCT map analysis and MMD loss calculations
@@ -115,8 +116,8 @@ class AttackPipeline:
 
                 # Labels from last batch
                 self.pred_cln_ = pred_cln_
-                self.pred_targeted_adv = pred_targeted_adv
-                self.pred_untargeted_adv = pred_untargeted_adv
+                self.pred_targeted_adv_ = pred_targeted_adv_
+                self.pred_untargeted_adv_ = pred_untargeted_adv_
                 self.true_label = true_label
                 # Images from last batch
                 self.adv_untargeted = adv_untargeted
@@ -250,11 +251,11 @@ class AttackPipeline:
             plt.subplot(3, num_plots, img_count + num_plots)
             AttackPipeline._imshow(adv_untargeted[ii])
             plt.title(
-                f"untargeted \n adv \n pred: {self.classes[self.pred_untargeted_adv[ii]]}")
+                f"untargeted \n adv \n pred: {self.classes[self.pred_untargeted_adv_[ii]]}")
             plt.subplot(3, num_plots, img_count + num_plots * 2)
             AttackPipeline._imshow(adv_targeted[ii])
             plt.title(
-                f"target {self.classes[self.target_label]} \n adv \n pred: {self.classes[self.pred_targeted_adv[ii]]}")
+                f"target {self.classes[self.target_label]} \n adv \n pred: {self.classes[self.pred_targeted_adv_[ii]]}")
 
         plt.tight_layout()
         plt.savefig(path.join(self.out_folder, 'test.png'))

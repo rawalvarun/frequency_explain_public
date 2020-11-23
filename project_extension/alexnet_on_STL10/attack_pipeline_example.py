@@ -10,11 +10,11 @@ from advertorch.attacks import LinfPGDAttack, CarliniWagnerL2Attack, JacobianSal
 from attack_pipeline import AttackPipeline
 
 
-model_filename = 'saved_alexnet_transfer_learnt_10classes.pth'
-out_folder = 'alexnet_finetune'
+model_filename = 'mobilenet_tl/modelfile.pth'
+out_folder = 'mobilenet_PGD'
 
 batch_size = 200
-num_folds = 2
+num_folds = 10
 
 loss = MMD_loss()
 model = torch.load(model_filename)
