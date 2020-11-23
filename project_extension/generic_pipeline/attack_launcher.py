@@ -62,8 +62,7 @@ if __name__ == '__main__':
                         help=f'attack name, one of {attacks}')
     parser.add_argument('--modelfile', default='', type=str,
                         help=f'filename from where the fintuned model can be loaded')
-    parser.add_argument(
-        '--outdir', default='', type=str, help=f'output directory where the attack results can be stored (a new directory will be created if it does not exist)')
+    parser.add_argument('--outdir', default='', type=str, help=f'output directory where the attack results can be stored (a new directory will be created if it does not exist)')
     parser.add_argument('--num_folds', default=1, type=int,
                         help='number of batches of the test set to generate adversarial examples for')
     parser.add_argument('--batch_size', default=200, type=int,
