@@ -199,9 +199,33 @@ class AttackPipeline:
         plt.savefig(path.join(self.out_folder, 'correct_DCT_targeted.png'))
         # plt.show()
 
+        eps = 1e-5
+        fig, ax = plt.subplots(1, 1, figsize=(6, 6))
+        im1 = ax.imshow(
+            lscale01(np.log10(self.DCT_untargeted+eps)), cmap='YlOrRd')
+        ax.title.set_text('untargeted')
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        fig.colorbar(im1, cax=cax)
+        # ax.set_axis_off()
+        plt.savefig(path.join(self.out_folder,
+                              'logscale_correct_DCT_untargeted.png'))
+        # plt.show()
+        fig, ax = plt.subplots(1, 1, figsize=(6, 6))
+        im1 = ax.imshow(
+            lscale01(np.log10(self.DCT_targeted+eps)), cmap='YlOrRd')
+        ax.title.set_text('targeted')
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        fig.colorbar(im1, cax=cax)
+        # ax.set_axis_off()
+        plt.savefig(path.join(self.out_folder,
+                              'logscale_correct_DCT_targeted.png'))
+        # plt.show()
+
     def plot_MMD_hist(self):
         fig, ax = plt.subplots(1, 1, figsize=(6, 6))
-        plt.hist(self.MMD_untargeted, bins=100, weights=100 *
+        plt.hist(self.MMD_untargeted, weights=100 *
                  np.ones(len(self.MMD_untargeted)) / len(self.MMD_untargeted))
         plt.xlabel("MMD_untargeted")
         plt.ylabel("% of images")
@@ -212,7 +236,7 @@ class AttackPipeline:
         # plt.show()
 
         fig, ax = plt.subplots(1, 1, figsize=(6, 6))
-        plt.hist(self.MMD_targeted, bins=100, weights=100 *
+        plt.hist(self.MMD_targeted, weights=100 *
                  np.ones(len(self.MMD_targeted)) / len(self.MMD_targeted))
         plt.xlabel("MMD_targeted")
         plt.ylabel("% of images")
@@ -222,7 +246,7 @@ class AttackPipeline:
         plt.savefig(path.join(self.out_folder, 'hist_targeted.png'))
         # plt.show()
 
-    @staticmethod
+    @ staticmethod
     def _imshow(img):
         img = img / 2 + 0.5     # unnormalize
         plt.imshow(make_grid(
