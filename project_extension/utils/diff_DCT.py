@@ -52,10 +52,10 @@ print("SSIM: {}".format(score))
 # 	cv2.rectangle(imageA, (x, y), (x + w, y + h), (0, 0, 255), 2)
 # 	cv2.rectangle(imageB, (x, y), (x + w, y + h), (0, 0, 255), 2)
 # # show the output images
-# cv2.imshow("Original", imageA)
-# cv2.imshow("Modified", imageB)
-# cv2.imshow("Diff", diff)
-# cv2.imshow("Thresh", thresh)
+# cv2.imwrite("Original", imageA)
+# cv2.imwrite("Modified", imageB)
+# cv2.imwrite("Diff", diff)
+# cv2.imwrite("Thresh", thresh)
 # cv2.waitKey(0)
 
 
@@ -78,18 +78,60 @@ after_gray = cv2.cvtColor(after, cv2.COLOR_BGR2GRAY)
 
 # Compute SSIM between two images
 (score, diff) = compare_ssim(before_gray, after_gray, full=True)
+#diff = before_gray - after_gray
+
+
+before_gray = before_gray.astype("int32")
+after_gray = after_gray.astype("int32")
+
+_subtract_ = before_gray - after_gray
+_a_min_b_ = (_subtract_ <= 0.0).astype("uint8")
+
+print(np.unique(_subtract_))
+print(np.unique(_a_min_b_))
+
+_subtract_ = after_gray - before_gray
+_b_min_a_ = (_subtract_ <= 0.0).astype("uint8")
+
+print(np.unique(_subtract_))
+print(np.unique(_b_min_a_))
+
+
+print(f"{np.count_nonzero(diff)} non zeros")
+print(diff)
+
+diff = diff * _b_min_a_
+#cv2.bitwise_and(diff, diff, _b_min_a_)
+
+print("\n\n")
+print(diff)
+print(f"{np.count_nonzero(diff)} non zeros")
+
+
+
 print("Image similarity", score)
+
+#print("Image similarity", np.unique(diff))
 
 # The diff image contains the actual image differences between the two images
 # and is represented as a floating point data type in the range [0,1] 
 # so we must convert the array to 8-bit unsigned integers in the range
 # [0,255] before we can use it with OpenCV
+
 diff = (diff * 255).astype("uint8")
+
 
 # Threshold the difference image, followed by finding contours to
 # obtain the regions of the two input images that differ
+
+'''
 thresh = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
 contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+'''
+
+thresh = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
+contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
 contours = contours[0] if len(contours) == 2 else contours[1]
 
 mask = np.zeros(before.shape, dtype='uint8')
@@ -99,14 +141,14 @@ for c in contours:
     area = cv2.contourArea(c)
     if area > 40:
         x,y,w,h = cv2.boundingRect(c)
-        cv2.rectangle(before, (x, y), (x + w, y + h), (36,255,12), 2)
+        cv2.rectangle(before, (x, y), (x + w, y + h), (12, 24, 251), 2)
         cv2.rectangle(after, (x, y), (x + w, y + h), (36,255,12), 2)
         cv2.drawContours(mask, [c], 0, (0,255,0), -1)
         cv2.drawContours(filled_after, [c], 0, (0,255,0), -1)
 
-cv2.imshow('before', before)
-cv2.imshow('after', after)
-cv2.imshow('diff',diff)
-cv2.imshow('mask',mask)
-cv2.imshow('filled after',filled_after)
+cv2.imwrite('before.png', before)
+cv2.imwrite('after.png', after)
+cv2.imwrite('diff.png',diff)
+cv2.imwrite('mask.png',mask)
+cv2.imwrite('filled after.png',filled_after)
 cv2.waitKey(0)
