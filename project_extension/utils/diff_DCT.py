@@ -1,6 +1,6 @@
 
 '''
-python utils/diff_DCT.py --first images/original_02.png --second images/modified_02.png
+python utils/diff_DCT.py --first ./generic_pipeline/alexnet_finetune_BFGS/correct_DCT_targeted.png  --second ./generic_pipeline/densenet_BFGS/correct_DCT_targeted.png 
 '''
 
 # import the necessary packages
@@ -29,7 +29,7 @@ grayB = imageB
 
 # compute the Structural Similarity Index (SSIM) between the two
 # images, ensuring that the difference image is returned
-(score, diff) = compare_ssim(imageA, imageB, full=True)
+(score, diff) = compare_ssim(imageA, imageB, full=True,  multichannel=True)
 diff = (diff * 255).astype("uint8")
 print("SSIM: {}".format(score))
 
