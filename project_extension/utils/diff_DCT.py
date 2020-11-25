@@ -1,11 +1,11 @@
 
 '''
-python diff_DCT.py --first ../generic_pipeline/alexnet_finetune_BFGS/correct_DCT_targeted.png  --second ../generic_pipeline/densenet_BFGS/correct_DCT_targeted.png 
+python diff_DCT.py --first ../generic_pipeline/alexnet_finetune_BFGS/correct_DCT_targeted.png  --second ../generic_pipeline/densenet_BFGS/correct_DCT_targeted.png -a alexnet -b densenet
 
 adding --all or not can lead to more or few diff points
 
 
-python diff_DCT.py --first ../generic_pipeline/small_batch/densenet_PGD/logscale_correct_DCT_targeted.png --second ../generic_pipeline/small_batch/squeezenet_PGD/logscale_correct_DCT_targeted.png
+python diff_DCT.py --first ../generic_pipeline/small_batch/densenet_PGD/logscale_correct_DCT_targeted.png --second ../generic_pipeline/small_batch/squeezenet_PGD/logscale_correct_DCT_targeted.png -a densenet -b squeezenet
 
 '''
 
@@ -22,8 +22,15 @@ ap.add_argument("-f", "--first", required=True,
 	help="first input image")
 ap.add_argument("-s", "--second", required=True,
 	help="second")
-ap.add_argument("-a", "--all", required=False,  action='store_true',
+
+ap.add_argument("-A", "--all", required=False,  action='store_true',
 	help="show all differences or only the highest ones ")
+
+ap.add_argument("-a", "--first-label", required=True,
+	help="first input image legend label")
+ap.add_argument("-b", "--second-label", required=True,
+	help="second input image legend label")
+
 args = vars(ap.parse_args())
 
 if not os.path.exists(args["first"]):
@@ -218,6 +225,17 @@ for c in contours2:
         cv2.rectangle(after, (x, y), (x + w, y + h), (36,255,12), 2)
         cv2.drawContours(mask, [c], 0, (255,0,255), -1)
         cv2.drawContours(filled_after, [c], 0, (255,0,255), -1)
+
+
+label = args["first_label"]
+bottom_center =  lambda img : (int(before.shape[0] / 2 - 50), int(before.shape[1] - 20))
+cv2.putText(before, label, bottom_center(before), cv2.FONT_HERSHEY_PLAIN, 1.0, (12, 24, 251), 2);
+cv2.putText(after, label, bottom_center(after), cv2.FONT_HERSHEY_PLAIN, 1.0, (12, 24, 251), 2);
+
+label = args["second_label"]
+bottom_center =  lambda img : (int(before.shape[0] / 2 + 50), int(before.shape[1] - 20))
+cv2.putText(before, label, bottom_center(before), cv2.FONT_HERSHEY_PLAIN, 1.0, (36,255,12), 2);
+cv2.putText(after, label, bottom_center(after), cv2.FONT_HERSHEY_PLAIN, 1.0, (36,255,12), 2);
 
 
 cv2.imwrite('before.png', before)
