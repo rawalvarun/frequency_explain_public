@@ -5,6 +5,9 @@ from advertorch.attacks import (
     CarliniWagnerL2Attack,
     JacobianSaliencyMapAttack,
     LBFGSAttack,
+    GradientSignAttack,
+    ElasticNetL1Attack,
+    SinglePixelAttack
 )
 
 
@@ -27,3 +30,12 @@ def map_config_to_attack(attack_name, model, classes):
     if attack_name == "LBFGSAttack":
         return LBFGSAttack(model, num_classes=len(classes), batch_size=1, binary_search_steps=9,
                            max_iterations=100, initial_const=0.01, clip_min=0, clip_max=1, loss_fn=None, targeted=False)
+
+    if attack_name == "GradientSignAttack":
+        return GradientSignAttack(model, loss_fn=None, eps=0.3, clip_min=0.0, clip_max=1.0, targeted=False)
+
+    if attack_name == "ElasticNetL1Attack":
+        return ElasticNetL1Attack(model, num_classes=len(classes), confidence=0, targeted=False, learning_rate=0.01, binary_search_steps=9, max_iterations=10000, abort_early=False, initial_const=0.001, clip_min=0.0, clip_max=1.0, beta=0.01, decision_rule='EN', loss_fn=None)
+
+    if attack_name == "SinglePixelAttack":
+        return SinglePixelAttack(model, max_pixels=100, clip_min=0.0, loss_fn=None, clip_max=1.0, comply_with_foolbox=False, targeted=False)
