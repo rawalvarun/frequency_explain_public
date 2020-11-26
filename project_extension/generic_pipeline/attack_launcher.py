@@ -19,7 +19,8 @@ attacks = [
     'LBFGSAttack',
     "GradientSignAttack",
     "ElasticNetL1Attack",
-    "SinglePixelAttack"
+    "SinglePixelAttack",
+    'DDNL2Attack'
 ]
 
 

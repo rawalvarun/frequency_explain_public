@@ -7,9 +7,9 @@ from advertorch.attacks import (
     LBFGSAttack,
     GradientSignAttack,
     ElasticNetL1Attack,
-    SinglePixelAttack
+    SinglePixelAttack,
+    DDNL2Attack
 )
-
 
 def map_config_to_attack(attack_name, model, classes):
     if attack_name == 'CarliniWagnerL2Attack':
@@ -39,3 +39,6 @@ def map_config_to_attack(attack_name, model, classes):
 
     if attack_name == "SinglePixelAttack":
         return SinglePixelAttack(model, max_pixels=100, clip_min=0.0, loss_fn=None, clip_max=1.0, comply_with_foolbox=False, targeted=False)
+
+    if attack_name == "DDNL2Attack":
+        return DDNL2Attack(model, nb_iter=100, gamma=0.05, init_norm=1.0, quantize=True, levels=256, clip_min=0.0, clip_max=1.0, targeted=False, loss_fn=None)
