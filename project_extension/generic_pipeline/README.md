@@ -34,3 +34,11 @@ python attack_launcher.py --attack DDNL2Attack --modelfile ./alexnet_tl/modelfil
 
 python attack_launcher.py --attack DDNL2Attack --modelfile ./densenet_tl/modelfile.pth  --num_folds 1 --batch_size 50 --outdir small_batch/densenet_DDLN2A
 
+
+
+
+python transfer_learning_launcher.py --outdir ./alexnet_tle100/ --resume_train_from ./alexnet_tl/modelfile.pth --num_epochs 80 --model_type alexnet 
+
+python transfer_learning_launcher.py --outdir ./densenet_tle100/ --resume_train_from ./densenet_tl/modelfile.pth --num_epochs 80 --model_type densenet 
+
+python transfer_learning_launcher.py --outdir ./mnasnet_tle100/ --resume_train_from ./mnasnet_tl/modelfile.pth --num_epochs 80 --model_type mnasnet 
