@@ -46,8 +46,6 @@ if __name__ == '__main__':
     parser.add_argument('--momentum', default=0.7, type=float, help='momentum')
     parser.add_argument('--dataset', default='STL10', type=str,
                         help='one of the dataset class constructors from pytorch')
-    parser.add_argument('--classes', default=[], type=list,
-                        help='list of class labels in the dataset')
 
     args = parser.parse_args()
 
