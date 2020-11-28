@@ -11,6 +11,7 @@ from advertorch.attacks import (
     DDNL2Attack
 )
 
+
 def map_config_to_attack(attack_name, model, classes):
     if attack_name == 'CarliniWagnerL2Attack':
         return CarliniWagnerL2Attack(model, num_classes=len(classes),
@@ -23,7 +24,7 @@ def map_config_to_attack(attack_name, model, classes):
 
     if attack_name == "LinfPGDAttack":
         return LinfPGDAttack(
-            model, loss_fn=nn.CrossEntropyLoss(reduction="sum"), eps=0.15,
+            model, loss_fn=nn.CrossEntropyLoss(reduction="sum"), eps=0.01,
             nb_iter=40, eps_iter=0.01, rand_init=True, clip_min=0.0, clip_max=1.0,
             targeted=False)
 
