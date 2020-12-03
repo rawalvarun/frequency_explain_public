@@ -202,7 +202,7 @@ class AttackPipeline:
         eps = 1e-5
         fig, ax = plt.subplots(1, 1, figsize=(6, 6))
         im1 = ax.imshow(
-            lscale01(np.log10(self.DCT_untargeted+eps)), cmap='YlOrRd')
+            (np.log10(self.DCT_untargeted+eps)), cmap='YlOrRd')
         ax.title.set_text('untargeted')
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -213,7 +213,7 @@ class AttackPipeline:
         # plt.show()
         fig, ax = plt.subplots(1, 1, figsize=(6, 6))
         im1 = ax.imshow(
-            lscale01(np.log10(self.DCT_targeted+eps)), cmap='YlOrRd')
+            (np.log10(self.DCT_targeted+eps)), cmap='YlOrRd')
         ax.title.set_text('targeted')
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
