@@ -1,0 +1,2 @@
+Total Accuracy:  Clean:  81.69999999999999 	 and during attack:  	 Untargeted attack:  1.0 	Targeted attack:  27.0
+Effect of attack on accurately predcited image by unattacked model:	Untargeted attack:  1.2239902080783354 	Targeted attack:  29.253365973072214

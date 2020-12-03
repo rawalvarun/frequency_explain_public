@@ -33,7 +33,7 @@ def map_config_to_attack(attack_name, model, classes):
                            max_iterations=100, initial_const=0.01, clip_min=0, clip_max=1, loss_fn=None, targeted=False)
 
     if attack_name == "GradientSignAttack":
-        return GradientSignAttack(model, loss_fn=None, eps=0.3, clip_min=0.0, clip_max=1.0, targeted=False)
+        return GradientSignAttack(model, loss_fn=None, eps=0.01, clip_min=0.0, clip_max=1.0, targeted=False)
 
     if attack_name == "ElasticNetL1Attack":
         return ElasticNetL1Attack(model, num_classes=len(classes), confidence=0, targeted=False, learning_rate=0.01, binary_search_steps=9, max_iterations=10000, abort_early=False, initial_const=0.001, clip_min=0.0, clip_max=1.0, beta=0.01, decision_rule='EN', loss_fn=None)
@@ -42,4 +42,4 @@ def map_config_to_attack(attack_name, model, classes):
         return SinglePixelAttack(model, max_pixels=100, clip_min=0.0, loss_fn=None, clip_max=1.0, comply_with_foolbox=False, targeted=False)
 
     if attack_name == "DDNL2Attack":
-        return DDNL2Attack(model, nb_iter=100, gamma=0.05, init_norm=1.0, quantize=True, levels=256, clip_min=0.0, clip_max=1.0, targeted=False, loss_fn=None)
+        return DDNL2Attack(model, nb_iter=100, gamma=0.05, init_norm=0.01, quantize=True, levels=256, clip_min=0.0, clip_max=1.0, targeted=False, loss_fn=None)
