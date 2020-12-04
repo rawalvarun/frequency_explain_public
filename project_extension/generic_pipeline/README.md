@@ -42,3 +42,10 @@ python transfer_learning_launcher.py --outdir ./alexnet_tle100/ --resume_train_f
 python transfer_learning_launcher.py --outdir ./densenet_tle100/ --resume_train_from ./densenet_tl/modelfile.pth --num_epochs 80 --model_type densenet 
 
 python transfer_learning_launcher.py --outdir ./mnasnet_tle100/ --resume_train_from ./mnasnet_tl/modelfile.pth --num_epochs 80 --model_type mnasnet 
+
+
+python attack_launcher.py --attack LinfPGDAttack --modelfile ./alexnet_tl/modelfile.pth  --num_folds 40 --batch_size 25 --outdir small_batch/alexnet_e100PGD
+
+python attack_launcher.py --attack DDNL2Attack --modelfile ./alexnet_tl/modelfile.pth  --num_folds 40 --batch_size 25 --outdir small_batch/alexnet_e100DDNL
+
+python attack_launcher.py --attack GradientSignAttack --modelfile ./alexnet_tl/modelfile.pth  --num_folds 40 --batch_size 25 --outdir small_batch/alexnet_e100GSA
