@@ -223,6 +223,19 @@ class AttackPipeline:
                               'logscale_correct_DCT_targeted.png'))
         # plt.show()
 
+        # difference plots
+        fig, ax = plt.subplots(1, 1, figsize=(6, 6))
+        im1 = ax.imshow(
+            (np.log10(self.DCT_untargeted+eps)-np.log10(self.DCT_targeted+eps)), cmap='YlOrRd')
+        ax.title.set_text('untargeted-targeted')
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        fig.colorbar(im1, cax=cax)
+        # ax.set_axis_off()
+        plt.savefig(path.join(self.out_folder,
+                              'diff_logscale_correct_DCT_untargeted_targeted.png'))
+        # plt.show()
+
     def plot_MMD_hist(self):
         fig, ax = plt.subplots(1, 1, figsize=(6, 6))
         plt.hist(self.MMD_untargeted, weights=100 *
