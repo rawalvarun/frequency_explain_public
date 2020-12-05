@@ -34,9 +34,11 @@ ap.add_argument("-b", "--second-label", required=True,
 args = vars(ap.parse_args())
 
 if not os.path.exists(args["first"]):
+	print(args["first"], " NOT FOUND")
 	raise Exception("First file doesn't exist")
 
 if not os.path.exists(args["second"]):
+	print(args["second"], " NOT FOUND")
 	raise Exception("Second file doesn't exist")
 
 # load the two input images
@@ -209,22 +211,22 @@ mask = np.zeros(before.shape, dtype='uint8')
 filled_after = after.copy()
 
 for c in contours1:
-    area = cv2.contourArea(c)
-    if area > 5:
-        x,y,w,h = cv2.boundingRect(c)
-        cv2.rectangle(before, (x, y), (x + w, y + h), (12, 24, 251), 2)
-        cv2.rectangle(after, (x, y), (x + w, y + h), (12, 24, 251), 2)
-        cv2.drawContours(mask, [c], 0, (0,255,0), -1)
-        cv2.drawContours(filled_after, [c], 0, (0,255,0), -1)
+	area = cv2.contourArea(c)
+	if area > 5:
+		x,y,w,h = cv2.boundingRect(c)
+		cv2.rectangle(before, (x, y), (x + w, y + h), (12, 24, 251), 2)
+		cv2.rectangle(after, (x, y), (x + w, y + h), (12, 24, 251), 2)
+		cv2.drawContours(mask, [c], 0, (0,255,0), -1)
+		cv2.drawContours(filled_after, [c], 0, (0,255,0), -1)
 
 for c in contours2:
-    area = cv2.contourArea(c)
-    if area > 5:
-        x,y,w,h = cv2.boundingRect(c)
-        cv2.rectangle(before, (x, y), (x + w, y + h), (36,255,12), 2)
-        cv2.rectangle(after, (x, y), (x + w, y + h), (36,255,12), 2)
-        cv2.drawContours(mask, [c], 0, (255,0,255), -1)
-        cv2.drawContours(filled_after, [c], 0, (255,0,255), -1)
+	area = cv2.contourArea(c)
+	if area > 5:
+		x,y,w,h = cv2.boundingRect(c)
+		cv2.rectangle(before, (x, y), (x + w, y + h), (36,255,12), 2)
+		cv2.rectangle(after, (x, y), (x + w, y + h), (36,255,12), 2)
+		cv2.drawContours(mask, [c], 0, (255,0,255), -1)
+		cv2.drawContours(filled_after, [c], 0, (255,0,255), -1)
 
 
 label = args["first_label"]
