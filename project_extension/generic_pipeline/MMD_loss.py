@@ -1,3 +1,4 @@
+# Ref: https://github.com/ZongxianLee/MMD_Loss.Pytorch
 import numpy as np
 import torch
 from torch import nn
